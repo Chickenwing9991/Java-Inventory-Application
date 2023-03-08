@@ -49,7 +49,4 @@ public class AddProductController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
-
-
-    }
 }
