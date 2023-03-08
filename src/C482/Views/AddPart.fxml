@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="315.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="14.0" layoutY="14.0" text="Add Part" underline="true">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="107.0" layoutY="66.0" text="ID" />
+      <TextField fx:id="addPartID" layoutX="132.0" layoutY="62.0" promptText="Auto Generated" />
+      <TextField fx:id="addPartName" layoutX="132.0" layoutY="100.0" promptText="Name Here" />
+      <Label layoutX="91.0" layoutY="104.0" text="Name" />
+      <Label layoutX="75.0" layoutY="140.0" text="Inventory" />
+      <TextField fx:id="addPartInv" layoutX="132.0" layoutY="136.0" promptText="Inventory Here" />
+      <TextField fx:id="addPartCost" layoutX="132.0" layoutY="175.0" promptText="Price Here" />
+      <TextField fx:id="addPartMax" layoutX="132.0" layoutY="212.0" promptText="Maximum Here" />
+      <Label layoutX="98.0" layoutY="179.0" text="Price" />
+      <TextField fx:id="addPartMachOrName" layoutX="132.0" layoutY="251.0" promptText="Machine ID Here" />
+      <Label layoutX="74.0" layoutY="216.0" text="Maximum" />
+      <Label fx:id="inhouseoroutsourced" layoutX="24.0" layoutY="255.0" prefHeight="17.0" prefWidth="105.0" text="Machine ID" />
+      <TextField fx:id="addPartMin" layoutX="358.0" layoutY="212.0" promptText="Minimum Here" />
+      <Label layoutX="300.0" layoutY="216.0" text="Minimum" />
+      <RadioButton fx:id="addInHouse" layoutX="174.0" layoutY="23.0" mnemonicParsing="false" onAction="#InHouseOrOutsourced" selected="true" text="In House">
+         <toggleGroup>
+            <ToggleGroup fx:id="source" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="addOutsource" layoutX="258.0" layoutY="23.0" mnemonicParsing="false" onAction="#InHouseOrOutsourced" text="Outsourced" toggleGroup="$source" />
+      <Button fx:id="addPartSave" layoutX="300.0" layoutY="251.0" mnemonicParsing="false" onAction="#saveButtonPushed" text="Save" />
+      <Button fx:id="addPartCancel" layoutX="358.0" layoutY="251.0" mnemonicParsing="false" onAction="#cancelButtonPushed" text="Cancel" />
+   </children>
+</AnchorPane>
