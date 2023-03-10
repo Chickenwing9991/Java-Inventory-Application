@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 
 import static C482.Controllers.mainController.confirmDialog;
 import static C482.Controllers.mainController.infoDialog;
+import static C482.Model.Inventory.getAllParts;
+import static C482.Model.Inventory.getAllProducts;
 
 public class AddProductController implements Initializable {
 
@@ -68,6 +70,7 @@ public class AddProductController implements Initializable {
     public Parts selectedPart;
     private int partID;
 
+    @FXML
     private TextField searchParts;
 
     public AddProductController(Stage stage){
@@ -149,49 +152,57 @@ public class AddProductController implements Initializable {
             infoDialog("No Selection", "Please choose something to remove");
         }
     }
+    private boolean validateInput(String Inv, String Min, String Max, String Name, String Cost, ObservableList<Parts> List) {
+        if (Name.isEmpty() || Inv.isEmpty() || Min.isEmpty() || Max.isEmpty() || Cost.isEmpty()) {
+            mainController.infoDialog("Input Error", "Cannot have blank fields", "Check all the fields.");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (Integer.parseInt(Inv) < Integer.parseInt(Min) || Integer.parseInt(Inv) > Integer.parseInt(Max)) {
+            mainController.infoDialog("Input Error", "Error in inventory field", "Inventory must be between Minimum and Maximum");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (Integer.parseInt(Max) < Integer.parseInt(Min)) {
+            mainController.infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (!Cost.matches("[+-]?\\d*\\.?\\d+")) {
+            mainController.infoDialog("Input Error", "Error in Price field", "The value must be a number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+        }
+
+        return true;
+    }
 
 
     @FXML
     public void saveButtonPressed(ActionEvent event) throws IOException {
-        String idText = addProductID.getText();
+
         String name = addProductName.getText();
         String inventoryText = addProductInv.getText();
         String minText = addProductMin.getText();
         String maxText = addProductMax.getText();
         String costText = addProductCost.getText();
 
-        if (associatedParts.isEmpty()) {
-            infoDialog("Input Error", "Please add one or more parts", "A product must have one or more parts associated with it.");
-            return;
-        }
+        try {
 
-        if (name.isEmpty() || inventoryText.isEmpty() || minText.isEmpty() || maxText.isEmpty() || costText.isEmpty()) {
-            infoDialog("Input Error", "Cannot have blank fields", "Check all the fields.");
-            return;
-        }
+            int id = getNewID();
+            int inventory = Integer.parseInt(inventoryText);
+            int min = Integer.parseInt(minText);
+            int max = Integer.parseInt(maxText);
+            double cost = Double.parseDouble(costText);
 
-        int id = Integer.parseInt(idText);
-        int inventory = Integer.parseInt(inventoryText);
-        int min = Integer.parseInt(minText);
-        int max = Integer.parseInt(maxText);
-        int cost = Integer.parseInt(costText);
 
-        if (max < min) {
-            infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
-            return;
-        }
-
-        if (inventory < min || inventory > max) {
-            infoDialog("Input Error", "Error in inventory field", "Inventory must be between Minimum and Maximum");
-            return;
-        }
-
-        boolean confirmed = confirmDialog("Save?", "Would you like to save this part?");
-        if (confirmed) {
-            Products product = new Products(id, inventory, min, max, name, cost);
-            product.addAssociatedPart(associatedParts);
-            Inventory.addProduct(product);
-            stage.close();
+            boolean confirmed = confirmDialog("Save?", "Would you like to save this part?");
+            if (confirmed) {
+                if(validateInput(inventoryText, minText, maxText, name, costText, associatedParts)){
+                    Products product = new Products(id, inventory, min, max, name, cost);
+                    product.addAssociatedPart(associatedParts);
+                    Inventory.addProduct(product);
+                    stage.close();
+                }
+            }
+        } catch (Exception e) {
+            validateInput(inventoryText, minText, maxText, name, costText, associatedParts);
         }
     }
 
@@ -217,6 +228,7 @@ public class AddProductController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        addProductID.setText(String.valueOf(getNewID()));
         orgPart = Inventory.getAllParts();
 
         //Same Table from Main Screen
@@ -236,5 +248,15 @@ public class AddProductController implements Initializable {
 
         updatePartTable();
         updateAssociatedPartTable();
+
     }
+
+    public static int getNewID(){
+        int newID = 1;
+        for (int i = 0; i < getAllProducts().size(); i++) {
+            newID++;
+        }
+        return newID;
+    }
+
 }

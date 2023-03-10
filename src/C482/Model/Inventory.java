@@ -103,8 +103,8 @@ public class Inventory {
      * @param index           the index of the product to update
      * @param selectedProduct the product to update with
      */
-    public static void updateProduct(int index, Parts selectedProduct) {
-        allParts.set(index, selectedProduct);
+    public static void updateProduct(int index, Products selectedProduct) {
+        allProducts.set(index, selectedProduct);
     }
 
     /**

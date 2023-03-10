@@ -16,7 +16,7 @@
          </font>
       </Label>
       <Label layoutX="107.0" layoutY="66.0" text="ID" />
-      <TextField fx:id="addProductID" layoutX="132.0" layoutY="62.0" promptText="Auto Generated" />
+      <TextField fx:id="addProductID" editable="false" layoutX="132.0" layoutY="62.0" text="Auto Generated" />
       <TextField fx:id="addProductName" layoutX="132.0" layoutY="100.0" promptText="Name Here" />
       <Label layoutX="91.0" layoutY="104.0" text="Name" />
       <Label layoutX="75.0" layoutY="140.0" text="Inventory" />
@@ -29,7 +29,7 @@
       <Label layoutX="300.0" layoutY="216.0" text="Minimum" />
       <Button layoutX="412.0" layoutY="588.0" mnemonicParsing="false" onAction="#saveButtonPressed" text="Save" />
       <Button layoutX="459.0" layoutY="588.0" mnemonicParsing="false" onAction="#cancelButtonPressed" text="Cancel" />
-      <TextField fx:id="searchParts" layoutX="350.0" layoutY="258.0" prefHeight="25.0" prefWidth="162.0" promptText="Search by Part ID or Name" />
+      <TextField fx:id="searchParts" layoutX="350.0" layoutY="258.0" onAction="#searchPartPushed" prefHeight="25.0" prefWidth="162.0" promptText="Search by Part ID or Name" />
       <TableView fx:id="partTable" layoutX="74.0" layoutY="291.0" prefHeight="121.0" prefWidth="437.0">
         <columns>
           <TableColumn fx:id="partIDCol" prefWidth="75.0" text="Part ID" />

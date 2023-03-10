@@ -4,6 +4,7 @@ import C482.Model.InHouse;
 import C482.Model.Outsourced;
 import C482.Model.Parts;
 import C482.Model.Inventory;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -77,10 +78,7 @@ public class ModifyPartController implements Initializable {
     @FXML
     void onActionSave(ActionEvent event) throws IOException {
         if (mainController.confirmDialog("Save?", "Would you like to save this part?")) {
-            if (validateInput()) {
-                savePart();
-                switchToMainWindow();
-            }
+            savePart();
         }
     }
 
@@ -134,26 +132,76 @@ public class ModifyPartController implements Initializable {
         return true;
     }
 
-    private void savePart() {
-        int id = Integer.parseInt(modifyID.getText());
-        String name = modifyName.getText();
-        double cost = Double.parseDouble(modifyCost.getText());
-        int stock = Integer.parseInt(modifyInv.getText());
-        int min = Integer.parseInt(modifyMin.getText());
-        int max = Integer.parseInt(modifyMax.getText());
-        int machineId = 0;
-        String companyName = "";
+    private boolean validateInput(String Inv, String Min, String Max, String Name, String Cost, String partOrMach, boolean InHouse) {
+        if (Name.isEmpty() || Inv.isEmpty() || Min.isEmpty() || Max.isEmpty() || Cost.isEmpty() || partOrMach.isEmpty()) {
+            mainController.infoDialog("Input Error", "Cannot have blank fields", "Check all the fields.");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (Integer.parseInt(Max) < Integer.parseInt(Min)) {
+            mainController.infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (Integer.parseInt(Inv) < Integer.parseInt(Min) || Integer.parseInt(Inv) > Integer.parseInt(Max)) {
+            mainController.infoDialog("Input Error", "Error in inventory field", "Inventory must be between Minimum and Maximum");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (InHouse == true && !partOrMach.matches("\\d+")) {
+            mainController.infoDialog("Input Error", "Error in Machine ID field", "The ID must be a number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (!Cost.matches("[+-]?\\d*\\.?\\d+")) {
+            mainController.infoDialog("Input Error", "Error in Price field", "The value must be a number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+        }
+        return true;
+    }
 
-        if (modifyInHouse.isSelected()) {
-            machineId = Integer.parseInt(modifyMachineID.getText());
-            InHouse newPart = new InHouse(id, stock, min, max, name, cost, machineId);
-            Inventory.updatePart(partID, newPart);
-        } else {
-            companyName = modifyMachineID.getText();
-            Outsourced newPart = new Outsourced(id, stock, min, max, name, cost, companyName);
-            Inventory.updatePart(partID, newPart);
+
+    private void savePart() {
+
+        String name = modifyName.getText();
+        String inventoryText = modifyInv.getText();
+        String minText = modifyMin.getText();
+        String maxText = modifyMax.getText();
+        String costText = modifyCost.getText();
+        String idOrNameText = modifyMachineID.getText();
+
+        try {
+
+            int id = partID;
+            double cost = Double.parseDouble(costText);
+            int stock = Integer.parseInt(inventoryText);
+            int min = Integer.parseInt(minText);
+            int max = Integer.parseInt(maxText);
+            String companyName = null;
+            int machineId = 0;
+
+            if (idOrNameText.matches(".*[a-zA-Z]+.*")){
+                companyName = idOrNameText;
+            }
+            else{
+                machineId = Integer.parseInt(idOrNameText);
+            }
+
+            if (validateInput(inventoryText, minText, maxText, name, costText, idOrNameText, modifyInHouse.isSelected())) {
+                if (modifyInHouse.isSelected()) {
+                    InHouse newPart = new InHouse(id, stock, min, max, name, cost, machineId);
+                    Inventory.updatePart(partID, newPart);
+                } else {
+                    Outsourced newPart = new Outsourced(id, stock, min, max, name, cost, companyName);
+                    Inventory.updatePart(partID, newPart);
+                }
+
+                stage.close();
+            }
+        }
+
+        catch (Exception e){
+            System.out.println(e);
+            validateInput(inventoryText, minText, maxText, name, costText, idOrNameText, modifyInHouse.isSelected());
         }
     }
+
 
     private void switchToMainWindow() throws IOException {
         stage.close();

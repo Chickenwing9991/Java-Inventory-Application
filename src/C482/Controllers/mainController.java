@@ -266,7 +266,19 @@ public class mainController implements Initializable {
             return;
         }
         if (confirmDialog("Warning!", "Would you like to delete this " + itemType + "?")) {
-            tableView.getItems().remove(tableView.getSelectionModel().getSelectedIndex());
+            if(itemType == "product"){
+                Products selectedProduct = (Products) tableView.getSelectionModel().getSelectedItem();
+                if(selectedProduct.getAllAssociatedParts().isEmpty()){
+                    tableView.getItems().remove(tableView.getSelectionModel().getSelectedIndex());
+                }
+                else{
+                    infoDialog("Deletion Error", "Associated Part Issue", "You cannot delete a product with an existing associated part");
+                }
+            }
+
+            if(itemType == "part"){
+                tableView.getItems().remove(tableView.getSelectionModel().getSelectedIndex());
+            }
         }
     }
 
@@ -320,7 +332,7 @@ public class mainController implements Initializable {
         alert.showAndWait();
     }
 
-    private static void infoDialog(String title, String content) {
+    public static void infoDialog(String title, String content) {
         infoDialog(title, null, content);
     }
 }
