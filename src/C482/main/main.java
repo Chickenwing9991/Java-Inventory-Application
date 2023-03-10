@@ -39,7 +39,7 @@ public class main extends Application {
 
         System.setProperty("javafx.fxml.trace", "true");
         Parent root = FXMLLoader.load(getClass().getResource("/C482/Views/MainForm.fxml"));
-        Scene scene = new Scene(root, 1280, 580);
+        Scene scene = new Scene(root, 794, 400);
         stage.setTitle("Inventory Management System");
         stage.setScene(scene);
         stage.show();
