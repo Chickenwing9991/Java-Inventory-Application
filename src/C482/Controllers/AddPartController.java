@@ -13,7 +13,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
 
 import static C482.Controllers.mainController.confirmDialog;
 import static C482.Model.Inventory.getAllParts;
@@ -93,13 +98,17 @@ public class AddPartController implements Initializable {
             mainController.infoDialog("Input Error", "Cannot have blank fields", "Check all the fields.");
             mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
             return false;
-        } else if (Integer.parseInt(Max) < Integer.parseInt(Min)) {
-            mainController.infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
-            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+        } else if (!Inv.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Inventory field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
             return false;
-        } else if (Integer.parseInt(Inv) < Integer.parseInt(Min) || Integer.parseInt(Inv) > Integer.parseInt(Max)) {
-            mainController.infoDialog("Input Error", "Error in inventory field", "Inventory must be between Minimum and Maximum");
-            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+        } else if (!Max.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Max field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
+            return false;
+        } else if (!Min.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Min field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
             return false;
         } else if (InHouse == true && !partOrMach.matches("\\d+")) {
             mainController.infoDialog("Input Error", "Error in Machine ID field", "The ID must be a number");
@@ -108,9 +117,17 @@ public class AddPartController implements Initializable {
         } else if (!Cost.matches("[+-]?\\d*\\.?\\d+")) {
             mainController.infoDialog("Input Error", "Error in Price field", "The value must be a number");
             mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
-        } else if (!) {
-            
+            return false;
+        } else if (Integer.parseInt(Max) < Integer.parseInt(Min)) {
+            mainController.infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
+            return false;
+        } else if (Integer.parseInt(Inv) < Integer.parseInt(Min) || Integer.parseInt(Inv) > Integer.parseInt(Max)) {
+            mainController.infoDialog("Input Error", "Error in inventory field", "Inventory must be between Minimum and Maximum");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
         }
+
         return true;
     }
 
@@ -154,11 +171,19 @@ public class AddPartController implements Initializable {
     }
 
     public static int getNewID(){
-        int newID = 1;
-        for (int i = 0; i < getAllParts().size(); i++) {
-            newID++;
+        try{
+            int newID = 1;
+            List<Integer> IDs  = getAllParts().stream().map(Parts::getPartId).collect(Collectors.toList());
+            newID = Collections.max(IDs);
+            if(newID >= 1){
+                newID = newID + 1;
+            }
+            else{
+                newID = 1;
+            }
+            return newID;
+        } catch(Exception e) {
+            return 1;
         }
-        return newID;
     }
-
 }

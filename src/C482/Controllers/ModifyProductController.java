@@ -17,7 +17,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static C482.Controllers.mainController.confirmDialog;
-
+/**
+ * The ModifyProductController class is responsible for handling events and managing the UI
+ * for modifying a product in the Inventory Management System.
+ *
+ * This class provides methods for setting the product to be modified, updating the associated parts
+ * table, removing a part from the product, canceling the modification, validating user input,
+ * and saving the modified product.
+ *
+ * The ModifyProductController implements the Initializable interface, which requires an initialize
+ * method that sets up the UI elements and table views.
+ */
 public class ModifyProductController implements Initializable {
 
     @FXML
@@ -69,10 +79,20 @@ public class ModifyProductController implements Initializable {
     private Products modProduct;
 
 
+    /**
+     * Constructs a new ModifyProductController with the given Stage.
+     *
+     * @param stage the Stage to use for the Modify Product window
+     */
     public ModifyProductController(Stage stage){
         this.stage = stage;
     }
 
+    /**
+     * Sets the product to be modified and populates the UI elements with its data.
+     *
+     * @param selectedProduct the product to be modified
+     */
     public void setItem(Products selectedProduct) {
         this.selectedProduct = selectedProduct;
         productID = C482.Model.Inventory.getAllProducts().indexOf(selectedProduct);
@@ -84,11 +104,21 @@ public class ModifyProductController implements Initializable {
         modifyProductMin.setText(Integer.toString(selectedProduct.getMin()));
         associatedParts.addAll(selectedProduct.getAllAssociatedParts());
     }
+
+    /**
+     * Updates the part and associated parts table views with the latest data.
+     */
     private void updateTables() {
         partTable.setItems(Inventory.getAllParts());
         associatedTable.setItems(associatedParts);
     }
 
+
+    /**
+     * Removes the selected part from the associated parts table.
+     *
+     * @param event the ActionEvent that triggered the method
+     */
     @FXML
     public void removeButtonPressed(ActionEvent event) {
         Parts selectedPart = associatedTable.getSelectionModel().getSelectedItem();
@@ -103,6 +133,12 @@ public class ModifyProductController implements Initializable {
         }
     }
 
+    /**
+     * Cancels the modification and switches back to the main window.
+     *
+     * @param event the ActionEvent that triggered the method
+     * @throws IOException if there is an error switching to the main window
+     */
     @FXML
     public void cancelButtonPressed(ActionEvent event) throws IOException {
         if (mainController.confirmDialog("Cancel?", "Are you sure?")) {
@@ -111,6 +147,13 @@ public class ModifyProductController implements Initializable {
     }
 
 
+
+    /**
+     * Initializes the UI elements and table views for the Modify Product window.
+     *
+     * @param location the URL location of the FXML file
+     * @param resources the ResourceBundle used for localization
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -135,35 +178,72 @@ public class ModifyProductController implements Initializable {
         updateAssociatedPartTable();
     }
 
-    private boolean validateInput(String Inv, String Min, String Max, String Name, String Cost, ObservableList<Parts> List) {
+    /**
+     * Validates the user input for the Modify Product form.
+     *
+     * @param Inv the inventory value as a string
+     * @param Min the minimum value as a string
+     * @param Max the maximum value as a string
+     * @param Name the name value as a string
+     * @param Cost the cost value as a string
+     * @return true if the input is valid, false otherwise
+     */
+    private boolean validateInput(String Inv, String Min, String Max, String Name, String Cost) {
         if (Name.isEmpty() || Inv.isEmpty() || Min.isEmpty() || Max.isEmpty() || Cost.isEmpty()) {
             mainController.infoDialog("Input Error", "Cannot have blank fields", "Check all the fields.");
             mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (!Inv.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Inventory field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
+            return false;
+        } else if (!Max.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Max field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
+            return false;
+        } else if (!Min.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Min field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
+            return false;
+        } else if (!Cost.matches("[+-]?\\d*\\.?\\d+")) {
+            mainController.infoDialog("Input Error", "Error in Price field", "The value must be a number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (Integer.parseInt(Max) < Integer.parseInt(Min)) {
+            mainController.infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
             return false;
         } else if (Integer.parseInt(Inv) < Integer.parseInt(Min) || Integer.parseInt(Inv) > Integer.parseInt(Max)) {
             mainController.infoDialog("Input Error", "Error in inventory field", "Inventory must be between Minimum and Maximum");
             mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
             return false;
-        } else if (Integer.parseInt(Max) < Integer.parseInt(Min)) {
-            mainController.infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
-            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
-            return false;
-        } else if (!Cost.matches("[+-]?\\d*\\.?\\d+")) {
-            mainController.infoDialog("Input Error", "Error in Price field", "The value must be a number");
-            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
         }
 
         return true;
     }
 
+
+    /**
+     * Updates the part table view with the latest data from the Inventory.
+     */
     public void updatePartTable() {
         partTable.setItems(Inventory.getAllParts());
     }
 
+
+    /**
+     * Updates the associated parts table view with the latest data.
+     */
     private void updateAssociatedPartTable() {
         associatedTable.setItems(associatedParts);
     }
 
+
+    /**
+     * Adds the selected part to the associated parts table.
+     *
+     * @param event the ActionEvent that triggered the method
+     */
     @FXML
     public void addButtonPressed(ActionEvent event) {
         Parts selectedPart = partTable.getSelectionModel().getSelectedItem();
@@ -175,6 +255,12 @@ public class ModifyProductController implements Initializable {
         }
     }
 
+
+    /**
+    * Handles the save button press event.
+    * @param event the ActionEvent that triggered the method
+    * @throws IOException if there is an error switching to the main window
+    */
     @FXML void saveButtonPressed(ActionEvent event) throws IOException {
 
             String name = modifyProductName.getText();
@@ -192,7 +278,7 @@ public class ModifyProductController implements Initializable {
                 String productName = modifyProductName.getText();
 
                 if (mainController.confirmDialog("Save?", "Would you like to save this part?")) {
-                    if (validateInput(inventoryText, minText, maxText, name, costText, associatedParts)) {
+                    if (validateInput(inventoryText, minText, maxText, name, costText)) {
                         this.modProduct = selectedProduct;
                         selectedProduct.setProductId(productID);
                         selectedProduct.setName(productName);
@@ -209,9 +295,16 @@ public class ModifyProductController implements Initializable {
                 }
             } catch (Exception e){
                 System.out.println(e);
-                validateInput(inventoryText, minText, maxText, name, costText, associatedParts);
+                validateInput(inventoryText, minText, maxText, name, costText);
             }
     }
+
+    /**
+     * Sets the Table Views to the Corresponding Lists
+     *
+     * @param items the ObservableList to set
+     * @param itemType the type part or product
+     */
     private <T> void setItemsTableView(ObservableList<T> items, String itemType) {
         if (itemType.equals("part")) {
             partTable.setItems((ObservableList<Parts>) items);
@@ -223,6 +316,11 @@ public class ModifyProductController implements Initializable {
         }
     }
 
+    /**
+     * Searches for a part in the Inventory based on the search term.
+     *
+     * @param event the ActionEvent that triggered the method
+     */
     @FXML
     public void searchPartPushed(ActionEvent event) {
         String searchTerm = searchParts.getText().trim();
@@ -251,6 +349,11 @@ public class ModifyProductController implements Initializable {
         }
     }
 
+    /**
+     * Switches back to the main window.
+     *
+     * @throws IOException if there is an error switching to the main window
+     */
     private void switchToMainWindow() throws IOException {
         stage.close();
     }

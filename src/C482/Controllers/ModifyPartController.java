@@ -137,13 +137,17 @@ public class ModifyPartController implements Initializable {
             mainController.infoDialog("Input Error", "Cannot have blank fields", "Check all the fields.");
             mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
             return false;
-        } else if (Integer.parseInt(Max) < Integer.parseInt(Min)) {
-            mainController.infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
-            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+        } else if (!Inv.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Inventory field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
             return false;
-        } else if (Integer.parseInt(Inv) < Integer.parseInt(Min) || Integer.parseInt(Inv) > Integer.parseInt(Max)) {
-            mainController.infoDialog("Input Error", "Error in inventory field", "Inventory must be between Minimum and Maximum");
-            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+        } else if (!Max.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Max field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
+            return false;
+        } else if (!Min.matches("^-?\\d+$")) {
+            mainController.infoDialog("Input Error", "Error in Min field", "The value must be a Whole number");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
             return false;
         } else if (InHouse == true && !partOrMach.matches("\\d+")) {
             mainController.infoDialog("Input Error", "Error in Machine ID field", "The ID must be a number");
@@ -152,7 +156,17 @@ public class ModifyPartController implements Initializable {
         } else if (!Cost.matches("[+-]?\\d*\\.?\\d+")) {
             mainController.infoDialog("Input Error", "Error in Price field", "The value must be a number");
             mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
+        } else if (Integer.parseInt(Max) < Integer.parseInt(Min)) {
+            mainController.infoDialog("Input Error", "Error in min and max field", "Check Min and Max value.");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input");
+            return false;
+        } else if (Integer.parseInt(Inv) < Integer.parseInt(Min) || Integer.parseInt(Inv) > Integer.parseInt(Max)) {
+            mainController.infoDialog("Input Error", "Error in inventory field", "Inventory must be between Minimum and Maximum");
+            mainController.infoDialog("Input Error", "Error in adding part", "Check fields for correct input" );
+            return false;
         }
+
         return true;
     }
 
