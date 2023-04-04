@@ -60,11 +60,28 @@ public class mainController implements Initializable {
     // Buttons and Fields
     private Parent scene;
 
-    // Event Handlers
+    /**
+     * @param event
+     * Triggers when the add button under the Parts table is clicked.
+     * A screen that allows you to enter the details for the new part appears.
+     *
+     * Runtime Error: Was not passing in the controller correctly. Causing buttons not to work.
+     *
+     */
     @FXML public void addPartPushed(ActionEvent event) throws IOException {
         openScene("Add Part", "/C482/Views/AddPart.fxml", AddPartController.class);
     }
 
+    /**
+     *
+     * @param event
+     * @throws IOException
+     *
+     * Is Triggered when the Modify Part button is pressed.
+     * Future Enhancement: Combine modifiedPushed function into 1 dynamic function.
+     *
+     *
+     */
     @FXML public void modifyPartPushed(ActionEvent event) throws IOException {
         Parts selectedPart = partTableView.getSelectionModel().getSelectedItem();
         if (selectedPart == null) {
@@ -75,7 +92,16 @@ public class mainController implements Initializable {
     }
 
 
-
+    /**
+     *
+     * @param event
+     * @throws IOException
+     *
+     * Is Triggered when the Modify Product button is pressed.
+     * Future Enhancement: Combine modifiedPushed function into 1 dynamic function.
+     *
+     *
+     */
     @FXML public void modifyProductPushed(ActionEvent event) throws IOException {
         Products selectedProduct = productTableView.getSelectionModel().getSelectedItem();
         if (selectedProduct == null) {
@@ -84,6 +110,18 @@ public class mainController implements Initializable {
         openSceneWithController("Modify Product", "/C482/Views/ModifyProduct.fxml", ModifyProductController.class, selectedProduct);
     }
 
+
+    /**
+     *
+     * @param event
+     * Triggers when enter is pressed while the search box is focused. Searches for Part Name or Product ID
+     * of a part then returns the matching results.
+     *
+     * Runtime Error: Originally didnt convert the productId to int which caused a casting error when searching.
+     * Future Enhancement: Add the ability to search in all columns for a match from the search field.
+     *
+     *
+     */
     @FXML
     public void searchPartPushed(ActionEvent event) {
         String searchTerm = searchParts.getText().trim();
@@ -113,7 +151,15 @@ public class mainController implements Initializable {
     }
 
 
-
+    /**
+     * Triggers when enter is pressed while the search box is focused. Searches for Product Name or Product ID
+     * of a product then returns the matching results.
+     *
+     * Runtime Error: Originally didnt convert the productId to int which caused a casting error when searching.
+     * Future Enhancement: Add the ability to search in all columns for a match from the search field.
+     *
+     *
+     */
     @FXML
     public void searchProductPushed(ActionEvent event) {
         String searchTerm = searchProducts.getText().trim();
@@ -142,18 +188,47 @@ public class mainController implements Initializable {
         }
     }
 
+    /**
+     * @param event
+     * Triggers when the delete button under the Parts table is clicked.
+     *
+     * Runtime Error: Misspelled button reference.
+     *
+     */
     @FXML public void deletePartPushed(ActionEvent event) {
         deleteItem(partTableView, "part");
     }
 
+    /**
+     * @param event
+     * Triggers when the delete button under the Products table is clicked.
+     *
+     * Runtime Error: Misspelled button reference.
+     *
+     */
     @FXML public void deleteProductPushed(ActionEvent event) {
         deleteItem(productTableView, "product");
     }
 
+
+    /**
+     * @param event
+     * Triggers when the add button under the Products table is clicked.
+     * A screen that allows you to enter the details for the new product appears.
+     *
+     * Runtime Error: Was not passing in the controller correctly. Causing buttons not to work.
+     *
+     */
     @FXML private void addProductPushed(ActionEvent event) throws IOException {
         openScene("Add Product", "/C482/Views/AddProduct.fxml", AddProductController.class);
     }
 
+    /**
+     *
+     * @param event
+     *
+     * Closes the Application
+     */
     @FXML public void exitButtonPushed(ActionEvent event) {
         if (confirmDialog("Exit", "Are you sure you would like to exit the program?")) {
             System.exit(0);
@@ -161,13 +236,36 @@ public class mainController implements Initializable {
     }
 
 
-    // Initialization
+    /**
+     *
+     * @param location
+     * @param resources
+     *
+     * Initializes Both Parts and Product Table.
+     *
+     *
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializePartsTable(partTableView, partIDCol, partNameCol, partInvLevelCol, partCostUnitCol, Inventory.getAllParts());
         initializeProductTable(productTableView, productIdCol, productNameCol, productInvLevelCol, productCostUnitCol, Inventory.getAllProducts());
     }
 
+    /**
+     *
+     * @param title
+     * @param fxmlFile
+     * @param controllerClass
+     * @param <T>
+     * @throws IOException
+     *
+     *
+     * Handles passing of class instance Controller to corresponding screen.
+     * In this case the class is only use for passing instance of Stage object to be able to destory later
+     *
+     *
+     *
+     */
     private <T> void openScene(String title, String fxmlFile, Class<T> controllerClass) throws IOException {
         T controller;
         Stage stage = new Stage();
@@ -196,7 +294,18 @@ public class mainController implements Initializable {
     }
 
 
-
+    /**
+     *
+     * @param title
+     * @param fxmlFile
+     * @param controllerClass
+     * @param selectedItem
+     * @param <T>
+     * @throws IOException
+     *
+     * Handles passing of class instance Controller to corresponding screen.
+     *
+     */
     private <T> void openSceneWithController(String title, String fxmlFile, Class<T> controllerClass, Object selectedItem) throws IOException {
         T controller = null;
         Stage stage = new Stage();
@@ -252,14 +361,16 @@ public class mainController implements Initializable {
     }
 
 
-    private void searchAndDisplayResults(String term, ObservableList results, String itemType) {
-        if (results == null) {
-            infoDialog("No Match", "Unable to locate a " + itemType + " name with: " + term);
-        } else {
-            setItemsTableView(results, itemType);
-        }
-    }
-
+    /**
+     *
+     * @param tableView
+     * @param itemType
+     *
+     * Takes two inputs. The specific table view and item type.
+     * Then gets the currently selected row and delete the item.
+     *
+     *
+     */
     private void deleteItem(TableView<?> tableView, String itemType) {
         if (tableView.getSelectionModel().isEmpty()) {
             infoDialog("Warning!", "No " + itemType + " Selected", "Please choose " + itemType + " from the above list");
@@ -282,6 +393,22 @@ public class mainController implements Initializable {
         }
     }
 
+
+    /**
+     *
+     * @param tableView
+     * @param idColumn
+     * @param nameColumn
+     * @param invLevelColumn
+     * @param costColumn
+     * @param items
+     * @param <T>
+     *
+     *
+     * Initializes the Parts Table. Adds the Columns for the Part objects.
+     * Then the table view is ready to display the parts.
+     *
+     */
     private <T> void initializePartsTable(TableView<T> tableView, TableColumn<T, Integer> idColumn, TableColumn<T, String> nameColumn, TableColumn<T, Integer> invLevelColumn, TableColumn<T, Double> costColumn, ObservableList<T> items) {
         if (tableView != null) {
             tableView.setItems(items);
@@ -292,6 +419,22 @@ public class mainController implements Initializable {
         }
     }
 
+
+    /**
+     *
+     * @param tableView
+     * @param idColumn
+     * @param nameColumn
+     * @param invLevelColumn
+     * @param costColumn
+     * @param items
+     * @param <T>
+     *
+     *
+     * Initializes the Parts Table. Adds the Columns for the Part objects.
+     * Then the table view is ready to display the parts.
+     *
+     */
     private <T> void initializeProductTable(TableView<T> tableView, TableColumn<T, Integer> idColumn, TableColumn<T, String> nameColumn, TableColumn<T, Integer> invLevelColumn, TableColumn<T, Double> costColumn, ObservableList<T> items) {
         if (tableView != null) {
             tableView.setItems(items);
@@ -303,6 +446,16 @@ public class mainController implements Initializable {
     }
 
 
+    /**
+     *
+     * @param items
+     * @param itemType
+     * @param <T>
+     *
+     *
+     * Assigns the Corresponding Observable Lists to the table views.
+     *
+     */
     private <T> void setItemsTableView(ObservableList<T> items, String itemType) {
         if (itemType.equals("part")) {
             partTableView.setItems((ObservableList<Parts>) items);
@@ -314,7 +467,17 @@ public class mainController implements Initializable {
         }
     }
 
-
+    /**
+     *
+     * @param title
+     * @param content
+     *
+     *
+     * Creates a popup for user confirmation.
+     *
+     *
+     * @return bool
+     */
     public static boolean confirmDialog(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -324,6 +487,16 @@ public class mainController implements Initializable {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    /**
+     *
+     * @param title
+     * @param header
+     * @param content
+     *
+     *
+     * Creates a popup to show user infomation.
+     *
+     */
     public static void infoDialog(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -332,6 +505,13 @@ public class mainController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     *
+     * @param title
+     * @param content
+     *
+     * Creates a popup to show user infomation.
+     */
     public static void infoDialog(String title, String content) {
         infoDialog(title, null, content);
     }

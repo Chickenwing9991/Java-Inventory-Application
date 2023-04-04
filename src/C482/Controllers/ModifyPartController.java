@@ -49,10 +49,19 @@ public class ModifyPartController implements Initializable {
     public Parts selectedPart;
     private int partID;
 
+    /**
+     * Constructs a new ModifyPartController with the given Stage.
+     *
+     * @param stage the Stage to use for the Add Product window
+     */
     public ModifyPartController(Stage stage){
         this.stage = stage;
     }
 
+    /**
+     * @param selectedPart
+     * Grabs the selected part values and inserts them into the fields for editing.
+     */
     public void setItem(Parts selectedPart) {
         this.selectedPart = selectedPart;
         partID = C482.Model.Inventory.getAllParts().indexOf(selectedPart);
@@ -75,6 +84,15 @@ public class ModifyPartController implements Initializable {
         }
     }
 
+    /**
+     * Handles the save button press event.
+     *
+     * Errors: Disconnect between FXID and function name. Resolved by matching Name and ID.
+     * Had issues with casting Strings to Integers win fields were blank.
+     *
+     * @param event the ActionEvent that triggered the method
+     * @throws IOException if there is an error switching to the main window
+     */
     @FXML
     void onActionSave(ActionEvent event) throws IOException {
         if (mainController.confirmDialog("Save?", "Would you like to save this part?")) {
@@ -82,6 +100,15 @@ public class ModifyPartController implements Initializable {
         }
     }
 
+
+    /**
+     *
+     * @param event
+     * @throws IOException
+     *
+     * Closes the current window.
+     *
+     */
     @FXML
     public void onActionCancel(ActionEvent event) throws IOException {
         if (mainController.confirmDialog("Cancel?", "Are you sure?")) {
@@ -89,6 +116,15 @@ public class ModifyPartController implements Initializable {
         }
     }
 
+    /**
+     *
+     * @param event
+     * @throws IOException
+     *
+     *
+     * Triggers when radio button value changes.
+     * Changes the Visual cues depending on the radio button value.
+     */
     @FXML
     public void InHouseOrOutsourced(ActionEvent event) throws IOException{
         Object source = event.getSource();
@@ -107,6 +143,11 @@ public class ModifyPartController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     }
 
+    /**
+     * Validates the Inputs of the modified Form.
+     *
+     * @return
+     */
     private boolean validateInput() {
         int partInventory = Integer.parseInt(modifyInv.getText());
         int partMin = Integer.parseInt(modifyMin.getText());
@@ -132,6 +173,19 @@ public class ModifyPartController implements Initializable {
         return true;
     }
 
+    /**
+     * Validates the user input for the Modify Product form.
+     *
+     * @param Inv the inventory value as a string
+     * @param Min the minimum value as a string
+     * @param Max the maximum value as a string
+     * @param Name the name value as a string
+     * @param Cost the cost value as a string
+     * @param partOrMach the part or machine value as a string
+     * @param InHouse the Inhouse value as a boolean
+     *
+     * @return true if the input is valid, false otherwise
+     */
     private boolean validateInput(String Inv, String Min, String Max, String Name, String Cost, String partOrMach, boolean InHouse) {
         if (Name.isEmpty() || Inv.isEmpty() || Min.isEmpty() || Max.isEmpty() || Cost.isEmpty() || partOrMach.isEmpty()) {
             mainController.infoDialog("Input Error", "Cannot have blank fields", "Check all the fields.");
@@ -170,7 +224,9 @@ public class ModifyPartController implements Initializable {
         return true;
     }
 
-
+    /**
+     * Processes the new Part Object and saves it to an observable list.
+     */
     private void savePart() {
 
         String name = modifyName.getText();
@@ -216,7 +272,12 @@ public class ModifyPartController implements Initializable {
         }
     }
 
-
+    /**
+     *
+     * @throws IOException
+     *
+     * Closes current window.
+     */
     private void switchToMainWindow() throws IOException {
         stage.close();
     }

@@ -23,8 +23,14 @@ import java.util.List;
 import static C482.Controllers.mainController.confirmDialog;
 import static C482.Model.Inventory.getAllParts;
 
+/**
+ * Add Part Controller Class. Contains all functions for Adding new Parts and FXML field/button references.
+ */
 public class AddPartController implements Initializable {
 
+    /**
+     * FXML Variable references to application fields.
+     */
     @FXML
     private RadioButton addOutsource;
     @FXML
@@ -50,11 +56,32 @@ public class AddPartController implements Initializable {
     @FXML
     private Button addPartCancel;
 
+
+    /**
+     * Creating Stage Object for Later Use
+     */
     private Stage stage;
+
+    /**
+     * Creating Scene Object for Later Use
+     */
     private Object scene;
+
+    /**
+     * Creating Parts Object for Later Use
+     */
     public Parts selectedPart;
+
+    /**
+     * Creating Part ID Variable for Later Use
+     */
     private int partID;
 
+    /**
+     * Constructs a new AddPartController with the given Stage.
+     *
+     * @param stage the Stage to use for the Add Product window
+     */
     public AddPartController(Stage stage){
         this.stage = stage;
     }
@@ -64,6 +91,16 @@ public class AddPartController implements Initializable {
         addPartID.setText(String.valueOf(getNewID()));
     }
 
+
+    /**
+     * Handles the save button press event.
+     *
+     * Errors: Disconnect between FXID and function name. Resolved by matching Name and ID.
+     * Had issues with casting Strings to Integers win fields were blank.
+     *
+     * @param event the ActionEvent that triggered the method
+     * @throws IOException if there is an error switching to the main window
+     */
     @FXML public void saveButtonPushed(ActionEvent event) throws IOException {
         if (confirmDialog("Save", "Are you sure you would like to save this Part")) {
             savePart();
@@ -71,12 +108,30 @@ public class AddPartController implements Initializable {
     }
 
 
+    /**
+     * Closes the current window.
+     *
+     * @param event triggered event
+     * @throws IOException IO Exception
+     *
+     *
+     *
+     */
     @FXML public void cancelButtonPushed(ActionEvent event) throws IOException {
         if (confirmDialog("Cancel", "Are you sure you would close")) {
             stage.close();
         }
     }
 
+
+    /**
+     * Triggers when radio button value changes.
+     * Changes the Visual cues depending on the radio button value.
+     *
+     * @param event triggered event
+     * @throws IOException IO Exception
+     *
+     */
     @FXML
     public void InHouseOrOutsourced(ActionEvent event) throws IOException{
         Object source = event.getSource();
@@ -93,6 +148,20 @@ public class AddPartController implements Initializable {
         }
     }
 
+
+    /**
+     * Validates the user input for the Modify Product form.
+     *
+     * @param Inv the inventory value as a string
+     * @param Min the minimum value as a string
+     * @param Max the maximum value as a string
+     * @param Name the name value as a string
+     * @param Cost the cost value as a string
+     * @param partOrMach the part or machine value as a string
+     * @param InHouse the Inhouse value as a boolean
+     *
+     * @return true if the input is valid, false otherwise
+     */
     private boolean validateInput(String Inv, String Min, String Max, String Name, String Cost, String partOrMach, boolean InHouse) {
         if (Name.isEmpty() || Inv.isEmpty() || Min.isEmpty() || Max.isEmpty() || Cost.isEmpty() || partOrMach.isEmpty()) {
             mainController.infoDialog("Input Error", "Cannot have blank fields", "Check all the fields.");
@@ -131,6 +200,9 @@ public class AddPartController implements Initializable {
         return true;
     }
 
+    /**
+     * Processes the new Part Object and saves it to an observable list.
+     */
     @FXML
     private void savePart() {
 
@@ -170,6 +242,14 @@ public class AddPartController implements Initializable {
         }
     }
 
+    /**
+     * Grabs the greatest ID of the existing records and adds 1
+     *
+     * Errors: Was originally getting the index Size of the List and Incrementing by 1;
+     * This caused created an issue with duplicate IDs. Now it gets the Max ID from list and Increments by 1.
+     *
+     * @return a New ID
+     */
     public static int getNewID(){
         try{
             int newID = 1;

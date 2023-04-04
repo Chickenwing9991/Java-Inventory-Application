@@ -38,7 +38,7 @@ public class Products {
     /**
      * Sets the product ID.
      *
-     * @param id the ID to set
+     * @param Id the ID to set
      */
     public void setProductId(int Id) {
         this.Id = Id;

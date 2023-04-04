@@ -27,8 +27,15 @@ import static C482.Controllers.mainController.infoDialog;
 import static C482.Model.Inventory.getAllParts;
 import static C482.Model.Inventory.getAllProducts;
 
+
+/**
+ * Add Product Controller Class. Contains all functions for Adding new Products and FXML field/button references.
+ */
 public class AddProductController implements Initializable {
 
+    /**
+     * FXML Variable references to application fields.
+     */
     @FXML
     private TextField addProductID;
     @FXML
@@ -64,17 +71,35 @@ public class AddProductController implements Initializable {
     @FXML
     private TableColumn<Parts, Double> associatedCostCol;
 
+    @FXML
+    private TextField searchParts;
 
+    /**
+     * Creates Observable Lists for Associated Parts.
+     */
     private ObservableList<Parts> associatedParts = FXCollections.observableArrayList();
     private ObservableList<Parts> orgPart = FXCollections.observableArrayList();
 
+    /**
+     * Creating Stage Object for Later Use
+     */
     private Stage stage;
+
+    /**
+     * Creating Scene Object for Later Use
+     */
     private Object scene;
+
+    /**
+     * Creating Parts Object for Later Use
+     */
     public Parts selectedPart;
+
+    /**
+     * Creating Part ID Variable for Later Use
+     */
     private int partID;
 
-    @FXML
-    private TextField searchParts;
 
 
     /**
@@ -153,6 +178,15 @@ public class AddProductController implements Initializable {
         }
     }
 
+    /**
+     *
+     * Triggers when delete button is pressed.
+     * Removes selected item from table and list.
+     *
+     * @param event Triggered Event
+     *
+     *
+     */
     @FXML
     public void removeButtonPressed(ActionEvent event) {
         Parts selectedPart = associatedTable.getSelectionModel().getSelectedItem();

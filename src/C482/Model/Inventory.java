@@ -3,6 +3,9 @@ package C482.Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * Inventory Class. Holds functions for Interacting with Observable Lists.
+ */
 public class Inventory {
 
     private static ObservableList<Parts> allParts = FXCollections.observableArrayList();
@@ -31,7 +34,7 @@ public class Inventory {
      * Searches for a part with the specified name or ID.
      *
      * @param name the name of the part to search for
-     * @param Id   the ID of the part to search for
+     * @param id   the ID of the part to search for
      * @return the matching part, or null if no match is found
      * @throws IllegalArgumentException if both search terms are null
      */
@@ -53,7 +56,7 @@ public class Inventory {
      * Searches for a product with the specified name or ID.
      *
      * @param name the name of the product to search for
-     * @param Id   the ID of the product to search for
+     * @param id   the ID of the product to search for
      * @return the matching product, or null if no match is found
      * @throws IllegalArgumentException if both search terms are null
      */
